@@ -1,0 +1,219 @@
+body {/*background-color: rgb(146, 226, 226,0.2); */
+ background: url("backgrounds/56.jpg") fixed no-repeat;
+}
+
+header
+{background-color: rgb(250, 250, 250);
+  padding-bottom: 15px;
+}
+section#infos_utilisateur
+{background-color:rgb(250, 250, 250);
+
+}
+
+#infos_utilisateur a.lien_contribuer
+{display: inline-block; background-color: rgba(62, 209, 32, 0.5);
+padding: 2px; color: black;
+}
+#infos_utilisateur a {color:rgb(24, 120, 162); font-weight: bold;}
+#infos_utilisateur a:hover{color:rgb(229,93,66);}
+#infos_utilisateur a.lien_contribuer:hover{color: blue;}
+
+.menu1	/*Les menus de premier niveau*/
+ {	display:inline-block;
+  text-transform:uppercase;
+ 
+  font-family: "dayrom","courrier new","times new roman";
+  font-size: 1.2em;
+  vertical-align:top;
+  width:32.5%;
+  
+  background-color:rgb(104, 174, 206);
+  
+ }
+ 
+header .menu1{margin-right:3px; position: relative;}
+ .liste{margin: 0px; padding: 0px;} /* Toutes les listes (ul) */
+header .liste
+ {display:none; position: absolute; z-index: 2;
+  width: 100%;
+  background-color:rgb(104, 174, 206);
+  }
+ 
+header .menu1 a{text-decoration:none;color:black; display:block;} /*Les liens du menu principal*/
+#corps .menu1 a{text-decoration:none;color:black; display:inline-block; width:90%;}
+ 
+ .titre_menu{border: 2px solid black; text-align:center; padding:2px; margin: 0px;} /*Le titre du menu */
+ 
+ .titre_menu:hover{background-color:rgb(229,93,66);
+	}
+ 
+ .menu2{padding:2px; border-bottom:1px solid white;
+		list-style-type:none;}
+  .menu2:hover
+	 {background-color:rgba(248, 248, 252,0.85);
+   }
+#corps .menu2:hover
+	 {background-color:rgb(174, 238, 174);
+	 }
+	 
+ header, #corps, footer	/*L'entête (contenant les menus), le corps et le pied de page*/
+ {width:90%;
+  margin:auto;
+ }
+
+#infos_utilisateur
+{ /*position: relative;*/
+  text-align: right; padding-right: 50px; padding-top: 5px; padding-bottom: 5px;
+}
+#infos_utilisateur span{margin-left: 30px;}
+#infos_utilisateur span.grade
+{text-transform: uppercase; color: brown; font-weight: bold; font-size: small;}
+/*#infos_utilisateur span.bienvenue{position: absolute; left: 5px; bottom: 5px;}*/
+
+  #corps {margin-top:10px;}
+  
+  #corps .menu1  /*Les menus dans le corps de la page*/
+  {display:block; width:100%; margin-bottom:8px;
+  background:transparent;
+  }
+  #corps .titre_menu
+	  {border:0px; background-color:rgb(252, 206, 137); text-align:left;
+	   position:relative;
+	   cursor: pointer;
+	  }
+#corps .titre_menu img{height:13px; position:absolute; right:10px; bottom:8px;}
+  #corps .menu2{padding-left:30px; border:0px; list-style:square inside;}
+
+#section_gauche, #section_droite {display:inline-block; vertical-align:top;}
+#section_centrale, #section_droite {border: 1px solid black;}
+#section_centrale{min-height: 450px;}
+
+#section_gauche {width: 69%;}
+#section_droite {width: 29%; font-family: "Bodoni MT", "Arial", "Century"; min-height: 400px;
+background-color: rgb(249,249,249);}
+
+#section_droite p {margin-top:0px;}
+
+li.filiere{font-size:1.2em;		/*pour la page "concours.php"*/
+			list-style-type:none;
+			margin-bottom:16px; padding-top:3px; padding-bottom:3px;
+			}
+h1{font-size:1.4em;}
+h2{font-size:1.3em;}
+li.filiere a{text-decoration:none; color:black; display:block;}
+li.filiere:hover{background-color:rgba(0,0,255,0.2);}
+li.filiere a:visited{color:maroon;}
+
+footer{ margin-top:30px; text-align:right;
+    padding:10px;
+    background-color: rgba(24, 121, 162, 0.85); color:rgb(235, 235, 235);
+    }
+    
+td,th{word-wrap: break-word;}
+
+/* Styles d'affichage de la liste des épreuves */
+
+td, th{border: 1px solid black; padding:5px;}
+th{text-align:left;}
+td{text-align:center;}
+td[colspan]{background-color: cadetblue;}
+table{border-collapse: collapse;}
+
+section.epreuves table{margin:auto;}
+section.epreuves a{color:black;}
+section.epreuves a:hover{color:rgb(47, 0, 255);}
+section.epreuves p{margin:0px; padding:5px;}
+section.epreuves p.titre{background-color: rgba(111, 235, 142, 0.5);}
+
+
+/* GESTION DES STYLES DES PARTIES "COMMENTAIRES" et "FORMULAIRE" */
+section#formulaire{margin-top:50px;}
+section#commentaires{margin-top:20px; border-top: 2px solid black;}
+
+div.message{border:1px solid black; margin-top: 10px; position: relative;}
+section#commentaires div.message{margin-left:30px;}
+section#commentaires div.message_repondu
+{margin-left:50px; margin-bottom: 10px;
+ background-color: rgba(222, 184, 135, 0.507);
+ font-family: 'Segoe UI', 'Bodoni MT', Tahoma, Geneva, Verdana, sans-serif;
+ font-size: small;
+
+}
+div.titre_message{background-color: rgba(80, 255, 133, 0.356);
+ border-bottom: 1px solid black;}
+
+div.message_a_repondre{background-color:rgba(214, 214, 214, 0.55);}
+
+section#commentaires div.titre_message{background-color: rgba(56, 41, 82, 0.356);}
+section#commentaires div.message_repondu div.titre_message, div.message_a_repondre div.titre_message
+  {background-color:rgba(222, 184, 135, 0.55);}
+
+div.message_a_repondre div.texte_message
+{background-color: rgba(222, 184, 135, 0.507); padding:5px;
+}
+a.annulerRepondre:hover{font-weight: bold;}
+
+span.pseudo, span.date_heure, span.grade_auteur{display: inline-block; padding:5px;}
+span.pseudo{font-weight: bold;}
+div.contenu_message{padding:5px;}
+span.date_heure
+ {padding-right: 5px; border-left: 1px solid black;} /*On annule la bordure droite*/
+span.grade_auteur
+  {margin-left: 30px; padding-right: 10px; font-style: italic; text-decoration: underline;
+  color: brown;}
+
+div.message a.repondre 
+{position: absolute; right: 0px; bottom:0px; text-align: right; color: rgb(37, 0, 139);
+  padding-right:5px;
+}
+div.message a.repondre:hover {color: darkred;}
+div.message div.contenu_message{margin-bottom: 10px;}
+
+p.zone_liens a{color: black; padding-right: 10px; padding-left: 10px;
+	border-right: 1px solid black;}
+p.zone_liens a.page_actuelle{font-weight: bold;}
+
+          /* STYLE DU CAROUSEL*/
+#carousel{position: relative; margin: auto; margin-bottom: 10px;
+  background-color: burlywood; width: 95%; 
+ text-align: center;}
+#carousel ul.slick-dots{position: absolute; bottom: 0px;}
+#carousel li[role="presentation"]{background-color: crimson; width: 15px; height: 15px;
+  margin: 0 10px;}
+#carousel li.slick-active{background-color:dodgerblue;}
+#carousel p{font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;}
+#carousel h1{font-family: 'Book Antiqua', 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;}
+
+/* MISE EN FORME POUR SMARTPHONES*/
+@media all and (max-device-width: 640px)
+{
+  body{background-repeat: repeat;}
+  header, #corps, footer	/*L'entête (contenant les menus), le corps et le pied de page*/
+  {width:100%; margin: auto;
+  }
+  footer{font-size: larger;}
+  #formulaire, #formulaire input, #formulaire textarea, #formulaire legend, #formulaire label
+  {font-size: larger;}
+
+  div.message, div.message_repondu {font-size: larger;}
+  div.texte_message, div.message_repondu div.contenu_message{font-size: medium;}
+  div.message_a_repondre{font-size: medium;}
+  div.message_a_repondre div.titre_message, div.message_repondu div.titre_message{font-size:large;}
+  /*#section_centrale*/ table{font-size: 1.4em;}
+  td[colspan]{font-size: 1em; padding:5px;}
+  td,th{padding: 13px;}
+  #section_droite{font-size: large;}
+
+
+  header{margin-bottom: 20px;}
+  #infos_utilisateur {padding-bottom: 10px;}
+  #infos_utilisateur span{font-size: xx-large; padding-top: 10px; padding-bottom: 10px;}
+  p.titre_menu, li.menu2{font-size: 1.4em; padding-top: 10px; padding-bottom: 10px;}
+  #corps li.menu2{font-size: 1.4em; padding-top: 15px; padding-bottom: 15px;}
+  li.filiere{font-size:1.3em; padding-top:10px; padding-bottom:10px; list-style-type:disc;}
+  section.epreuves p.titre{font-size: larger;}
+  h3{font-size:1.3em;}
+}
+
+/*FIN*/

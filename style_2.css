@@ -1,0 +1,65 @@
+body {/*background-color: rgb(146, 226, 226,0.2); */
+	background: url("backgrounds/53.jpg") fixed;
+   }
+
+td, th{border: 1px solid black; padding:5px; }
+th{text-align:left;}
+td{text-align:center;}
+td[colspan]{background-color: cadetblue;}
+a{color:black;}
+a:hover{color:rgb(47, 0, 255);}
+section#filieres td{text-align:left;}
+section#filieres td:hover{background-color:rgb(230, 198, 198); cursor: pointer;}
+section#epreuves p{margin:0px; padding:5px;}
+section#epreuves p.titre, section#epreuves_page_upload p.titre
+{background-color: rgba(111, 235, 142, 0.5);}
+
+section#upload{max-width: 650px; overflow: auto;}
+section#epreuves_page_upload{max-width: 650px;}
+
+table{border-collapse: collapse;}
+
+section{display:inline-block; margin: 5px; vertical-align:top;} /*Cette ligne est utile pour la page brouillon*/
+
+#infos_utilisateur{display: block; text-align: right; padding-right: 50px; padding-top: 5px; padding-bottom: 5px;}
+#infos_utilisateur span{margin-left: 30px;}
+#infos_utilisateur span.grade
+{text-transform: uppercase; color: brown; font-weight: bold; font-size: small;}
+#infos_utilisateur a.lien_contribuer
+{display: inline-block; background-color: rgba(62, 209, 32, 0.5);
+padding: 2px; font-weight: bold;
+}
+
+section#connexion, section#inscription, section#ecoles, section#filieres
+{display:block; border: 1px solid black; 
+			max-width:500px; margin:auto; padding:5px;
+			}
+
+input, select, textarea{font-family: "Book Antiqua" , "Times New Roman" , "Bodoni MT"; font-size:1.1em;}
+#upload input, #upload select, #upload textarea
+{font-family: "Bodoni MT"; font-size:1em;
+}
+input[type="submit"]{margin-right:100px;}
+
+td,th{word-wrap: break-word;}
+
+p.rapport_upload{border-bottom: 1px solid red; padding-bottom: 3px;}
+strong.upload_ok{text-transform: uppercase;}
+
+p.erreur_inscription, p.erreur_connexion{color: red;}
+
+section#profil span{font-weight: bold;}
+section#profil span, section#profil img, section#profil a {margin-left: 20px;}
+section#profil img {max-width: 200px; max-height: 200px;}
+
+/*Pour la page de modification de la photo de profil*/
+p.apercu_image, p.apercu_fichiers{color: red;}
+p.apercu_image img{max-width: 300px; max-height: 300px;}
+p.apercu_image span{display: block; color: black;}
+
+/* Pour la page contribuer.php */
+h1{margin:0px; font-size: 1.3em;}
+h1+p{margin-top:5px; margin-bottom: 0px;}
+section#contribuer{display:block; border: 1px solid black; /* margin:auto; */
+	max-width:800px; padding:5px;}
+section#contribuer textarea {font-size: small; width: 300px; height: 80px;}

@@ -1,3 +1,0 @@
-/backgrounds
-.htaccess
-definitions.php
