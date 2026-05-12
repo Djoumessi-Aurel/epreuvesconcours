@@ -1,11 +1,46 @@
-import { Eye, Users } from 'lucide-react'
-import { getNbVisitesTotales, getNbVisitesAujourdhui } from '@/lib/queries/visites'
+'use client'
 
-export async function Sidebar() {
-  const [total, aujourdhui] = await Promise.all([
-    getNbVisitesTotales(),
-    getNbVisitesAujourdhui(),
-  ])
+import { useEffect, useState } from 'react'
+import { Eye, Users } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
+
+function StatItem({ icon, label, value }: { icon: React.ReactNode; label: string; value: number | null }) {
+  return (
+    <li className="flex items-center justify-between">
+      <span className="flex items-center gap-2 text-sm text-gray-700">
+        {icon} {label}
+      </span>
+      <span className="text-base font-bold text-blue-800">
+        {value === null ? <span className="inline-block h-4 w-8 animate-pulse rounded bg-gray-200" /> : value}
+      </span>
+    </li>
+  )
+}
+
+export function Sidebar() {
+  const [total, setTotal] = useState<number | null>(null)
+  const [aujourdhui, setAujourdhui] = useState<number | null>(null)
+
+  useEffect(() => {
+    const supabase = createClient()
+    const today = new Date().toISOString().split('T')[0]
+
+    supabase
+      .from('visites')
+      .select('nb_visites')
+      .then(({ data }) => {
+        setTotal((data ?? []).reduce((sum, r) => sum + r.nb_visites, 0))
+      })
+
+    supabase
+      .from('visites')
+      .select('nb_visites')
+      .eq('jour', today)
+      .maybeSingle()
+      .then(({ data }) => {
+        setAujourdhui(data?.nb_visites ?? 1)
+      })
+  }, [])
 
   return (
     <aside className="space-y-4">
@@ -14,18 +49,16 @@ export async function Sidebar() {
           Statistiques
         </h3>
         <ul className="space-y-3">
-          <li className="flex items-center justify-between">
-            <span className="flex items-center gap-2 text-sm text-gray-700">
-              <Eye className="h-4 w-4 text-gray-500" /> Visites aujourd&apos;hui
-            </span>
-            <span className="text-base font-bold text-blue-800">{aujourdhui}</span>
-          </li>
-          <li className="flex items-center justify-between">
-            <span className="flex items-center gap-2 text-sm text-gray-700">
-              <Users className="h-4 w-4 text-gray-500" /> Visites totales
-            </span>
-            <span className="text-base font-bold text-blue-800">{total}</span>
-          </li>
+          <StatItem
+            icon={<Eye className="h-4 w-4 text-gray-500" />}
+            label="Visites aujourd'hui"
+            value={aujourdhui}
+          />
+          <StatItem
+            icon={<Users className="h-4 w-4 text-gray-500" />}
+            label="Visites totales"
+            value={total}
+          />
         </ul>
       </div>
 

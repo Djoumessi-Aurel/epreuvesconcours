@@ -2,7 +2,7 @@
 
 import { connection } from 'next/server'
 import { revalidatePath } from 'next/cache'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createAdminClient } from '@/lib/supabase/server'
 
 // Convention PHP : "{codeFiliere} {annee} {matiere}.pdf" (espaces, minuscules sans accents)
 function nomFichierEpreuve(codeFiliere: string, annee: number, matiere: string): string {
@@ -56,12 +56,13 @@ export async function approuverContribution(
 
   if (!contribution) return { error: 'Contribution introuvable.' }
 
+  const adminSupabase = createAdminClient()
   const BUCKET = process.env.SUPABASE_BUCKET ?? 'site-epreuves'
   const srcPath = `contributions/${contribution.storage_path}`
   const storagePath = `${codeFiliere}/${nomFichierEpreuve(codeFiliere, annee, matiere)}`
   const destPath = `epreuves/${storagePath}`
 
-  const { data: fileData, error: downloadError } = await supabase.storage
+  const { data: fileData, error: downloadError } = await adminSupabase.storage
     .from(BUCKET)
     .download(srcPath)
 
@@ -78,11 +79,11 @@ export async function approuverContribution(
     .single() as { data: { storage_path: string } | null }
 
   if (epreuveExistante && epreuveExistante.storage_path !== storagePath) {
-    await supabase.storage.from(BUCKET).remove([`epreuves/${epreuveExistante.storage_path}`])
+    await adminSupabase.storage.from(BUCKET).remove([`epreuves/${epreuveExistante.storage_path}`])
   }
 
   const buffer = Buffer.from(await fileData.arrayBuffer())
-  const { error: uploadError } = await supabase.storage
+  const { error: uploadError } = await adminSupabase.storage
     .from(BUCKET)
     .upload(destPath, buffer, { contentType: 'application/pdf', upsert: true })
 
@@ -94,11 +95,11 @@ export async function approuverContribution(
   )
 
   if (dbError) {
-    await supabase.storage.from(BUCKET).remove([destPath])
+    await adminSupabase.storage.from(BUCKET).remove([destPath])
     return { error: `Erreur base de données : ${dbError.message}` }
   }
 
-  await supabase.storage.from(BUCKET).remove([srcPath])
+  await adminSupabase.storage.from(BUCKET).remove([srcPath])
 
   await supabase
     .from('contributions')
@@ -139,7 +140,7 @@ export async function rejeterContribution(
 
   if (contribution?.storage_path) {
     const BUCKET = process.env.SUPABASE_BUCKET ?? 'site-epreuves'
-    await supabase.storage.from(BUCKET).remove([`contributions/${contribution.storage_path}`])
+    await createAdminClient().storage.from(BUCKET).remove([`contributions/${contribution.storage_path}`])
   }
 
   revalidatePath('/admin')
@@ -179,6 +180,7 @@ export async function uploadEpreuves(
       return { error: 'Ajoutez au moins une épreuve avec un fichier PDF.' }
     }
 
+    const adminSupabase = createAdminClient()
     const BUCKET = process.env.SUPABASE_BUCKET ?? 'site-epreuves'
     const publiees: string[] = []
     const erreurs: string[] = []
@@ -196,7 +198,7 @@ export async function uploadEpreuves(
       const storagePath = `${codeFiliere}/${nomFichierEpreuve(codeFiliere, annee, matiere)}`
       const buffer = Buffer.from(await fichier.arrayBuffer())
 
-      const { error: uploadError } = await supabase.storage
+      const { error: uploadError } = await adminSupabase.storage
         .from(BUCKET)
         .upload(`epreuves/${storagePath}`, buffer, { contentType: 'application/pdf', upsert: true })
 
@@ -205,15 +207,13 @@ export async function uploadEpreuves(
         continue
       }
 
-      const { error: dbError } = await supabase.from('epreuves').insert({
-        code_filiere: codeFiliere,
-        matiere,
-        annee,
-        storage_path: storagePath,
-      })
+      const { error: dbError } = await supabase.from('epreuves').upsert(
+        { code_filiere: codeFiliere, matiere, annee, storage_path: storagePath },
+        { onConflict: 'code_filiere,annee,matiere' }
+      )
 
       if (dbError) {
-        await supabase.storage.from(BUCKET).remove([`epreuves/${storagePath}`])
+        await adminSupabase.storage.from(BUCKET).remove([`epreuves/${storagePath}`])
         erreurs.push(`"${matiere}" : ${dbError.message}`)
         continue
       }

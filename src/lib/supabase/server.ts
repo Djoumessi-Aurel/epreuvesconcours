@@ -1,4 +1,5 @@
 import { createServerClient } from '@supabase/ssr'
+import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { cookies } from 'next/headers'
 import type { Database } from '@/types/database.types'
 
@@ -24,5 +25,13 @@ export async function createClient() {
         },
       },
     }
+  )
+}
+
+/** Client avec la service_role key — contourne le RLS. À n'utiliser que dans les Server Actions admin. */
+export function createAdminClient() {
+  return createSupabaseClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
   )
 }
