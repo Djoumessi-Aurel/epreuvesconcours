@@ -4,6 +4,198 @@ import { connection } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { createClient, createAdminClient } from '@/lib/supabase/server'
 
+// ---------------------------------------------------------------------------
+// CRUD Écoles
+// ---------------------------------------------------------------------------
+
+export async function creerEcole(
+  prevState: AdminActionState,
+  formData: FormData
+): Promise<AdminActionState> {
+  if (!await estAdmin()) return { error: 'Non autorisé.' }
+
+  const codeEcole   = (formData.get('code_ecole') as string)?.trim().toUpperCase()
+  const nomEcole    = (formData.get('nom_ecole') as string)?.trim()
+  const nomReduit   = (formData.get('nom_reduit') as string)?.trim()
+  const typeConcours = (formData.get('type_concours') as string)?.trim()
+
+  if (!codeEcole || !nomEcole || !nomReduit || !typeConcours)
+    return { error: 'Tous les champs sont obligatoires.' }
+
+  if (!/^[A-Z0-9\-]{2,20}$/.test(codeEcole))
+    return { error: 'Le code doit contenir uniquement des lettres majuscules, chiffres ou tirets (2–20 caractères).' }
+
+  const supabase = await createClient()
+  const { error } = await supabase.from('ecoles').insert({ code_ecole: codeEcole, nom_ecole: nomEcole, nom_reduit: nomReduit, type_concours: typeConcours })
+
+  if (error) {
+    if (error.code === '23505') return { error: `Le code "${codeEcole}" existe déjà.` }
+    return { error: `Erreur base de données : ${error.message}` }
+  }
+
+  revalidatePath('/admin/ecoles')
+  revalidatePath('/')
+  return { success: `École "${nomReduit}" créée.` }
+}
+
+export async function modifierEcole(
+  prevState: AdminActionState,
+  formData: FormData
+): Promise<AdminActionState> {
+  if (!await estAdmin()) return { error: 'Non autorisé.' }
+
+  const codeEcole   = (formData.get('code_ecole') as string)?.trim()
+  const nomEcole    = (formData.get('nom_ecole') as string)?.trim()
+  const nomReduit   = (formData.get('nom_reduit') as string)?.trim()
+  const typeConcours = (formData.get('type_concours') as string)?.trim()
+
+  if (!codeEcole || !nomEcole || !nomReduit || !typeConcours)
+    return { error: 'Tous les champs sont obligatoires.' }
+
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('ecoles')
+    .update({ nom_ecole: nomEcole, nom_reduit: nomReduit, type_concours: typeConcours })
+    .eq('code_ecole', codeEcole)
+
+  if (error) return { error: `Erreur base de données : ${error.message}` }
+
+  revalidatePath('/admin/ecoles')
+  revalidatePath(`/concours/${codeEcole}`)
+  revalidatePath('/')
+  return { success: `École "${nomReduit}" mise à jour.` }
+}
+
+export async function supprimerEcole(
+  prevState: AdminActionState,
+  formData: FormData
+): Promise<AdminActionState> {
+  if (!await estAdmin()) return { error: 'Non autorisé.' }
+
+  const codeEcole = (formData.get('code_ecole') as string)?.trim()
+  if (!codeEcole) return { error: 'Code école manquant.' }
+
+  const supabase = await createClient()
+
+  const { count } = await supabase
+    .from('filieres')
+    .select('*', { count: 'exact', head: true })
+    .eq('code_ecole', codeEcole)
+
+  if ((count ?? 0) > 0)
+    return { error: `Impossible de supprimer : ${count} filière(s) rattachée(s) à cette école. Supprimez-les d'abord.` }
+
+  const { error } = await supabase.from('ecoles').delete().eq('code_ecole', codeEcole)
+  if (error) return { error: `Erreur base de données : ${error.message}` }
+
+  revalidatePath('/admin/ecoles')
+  revalidatePath('/')
+  return { success: 'École supprimée.' }
+}
+
+// ---------------------------------------------------------------------------
+// CRUD Filières
+// ---------------------------------------------------------------------------
+
+export async function creerFiliere(
+  prevState: AdminActionState,
+  formData: FormData
+): Promise<AdminActionState> {
+  if (!await estAdmin()) return { error: 'Non autorisé.' }
+
+  const codeFiliere  = (formData.get('code_filiere') as string)?.trim().toUpperCase()
+  const codeEcole    = (formData.get('code_ecole') as string)?.trim()
+  const nomFiliere   = (formData.get('nom_filiere') as string)?.trim()
+  const niveau       = (formData.get('niveau') as string)?.trim()
+
+  if (!codeFiliere || !codeEcole || !nomFiliere)
+    return { error: 'Code filière, école et nom sont obligatoires.' }
+
+  if (!/^[A-Z0-9\-]{2,30}$/.test(codeFiliere))
+    return { error: 'Le code doit contenir uniquement des lettres majuscules, chiffres ou tirets (2–30 caractères).' }
+
+  const supabase = await createClient()
+  const { error } = await supabase.from('filieres').insert({
+    code_filiere: codeFiliere,
+    code_ecole: codeEcole,
+    nom_filiere: nomFiliere,
+    niveau: niveau ?? '',
+  })
+
+  if (error) {
+    if (error.code === '23505') return { error: `Le code "${codeFiliere}" existe déjà.` }
+    if (error.code === '23503') return { error: `L'école "${codeEcole}" n'existe pas.` }
+    return { error: `Erreur base de données : ${error.message}` }
+  }
+
+  revalidatePath('/admin/filieres')
+  revalidatePath(`/concours/${codeEcole}`)
+  return { success: `Filière "${nomFiliere}" créée.` }
+}
+
+export async function modifierFiliere(
+  prevState: AdminActionState,
+  formData: FormData
+): Promise<AdminActionState> {
+  if (!await estAdmin()) return { error: 'Non autorisé.' }
+
+  const codeFiliere = (formData.get('code_filiere') as string)?.trim()
+  const nomFiliere  = (formData.get('nom_filiere') as string)?.trim()
+  const niveau      = (formData.get('niveau') as string)?.trim()
+
+  if (!codeFiliere || !nomFiliere)
+    return { error: 'Code filière et nom sont obligatoires.' }
+
+  const supabase = await createClient()
+
+  // Récupérer code_ecole pour revalidation
+  const { data: existing } = await supabase
+    .from('filieres').select('code_ecole').eq('code_filiere', codeFiliere).single()
+
+  const { error } = await supabase
+    .from('filieres')
+    .update({ nom_filiere: nomFiliere, niveau: niveau ?? '' })
+    .eq('code_filiere', codeFiliere)
+
+  if (error) return { error: `Erreur base de données : ${error.message}` }
+
+  revalidatePath('/admin/filieres')
+  if (existing?.code_ecole) revalidatePath(`/concours/${existing.code_ecole}`)
+  revalidatePath(`/epreuves/${codeFiliere}`)
+  return { success: `Filière "${nomFiliere}" mise à jour.` }
+}
+
+export async function supprimerFiliere(
+  prevState: AdminActionState,
+  formData: FormData
+): Promise<AdminActionState> {
+  if (!await estAdmin()) return { error: 'Non autorisé.' }
+
+  const codeFiliere = (formData.get('code_filiere') as string)?.trim()
+  if (!codeFiliere) return { error: 'Code filière manquant.' }
+
+  const supabase = await createClient()
+
+  const { count } = await supabase
+    .from('epreuves')
+    .select('*', { count: 'exact', head: true })
+    .eq('code_filiere', codeFiliere)
+
+  if ((count ?? 0) > 0)
+    return { error: `Impossible de supprimer : ${count} épreuve(s) rattachée(s) à cette filière. Supprimez-les d'abord.` }
+
+  const { data: existing } = await supabase
+    .from('filieres').select('code_ecole').eq('code_filiere', codeFiliere).single()
+
+  const { error } = await supabase.from('filieres').delete().eq('code_filiere', codeFiliere)
+  if (error) return { error: `Erreur base de données : ${error.message}` }
+
+  revalidatePath('/admin/filieres')
+  if (existing?.code_ecole) revalidatePath(`/concours/${existing.code_ecole}`)
+  revalidatePath('/')
+  return { success: 'Filière supprimée.' }
+}
+
 // Convention PHP : "{codeFiliere} {annee} {matiere}.pdf" (espaces, minuscules sans accents)
 function nomFichierEpreuve(codeFiliere: string, annee: number, matiere: string): string {
   const matiereSanitisee = matiere

@@ -1,7 +1,7 @@
 import { connection } from 'next/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { FileCheck, Clock, XCircle, Upload } from 'lucide-react'
+import { FileCheck, Clock, XCircle, Upload, School, BookOpen } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { ContributionCard } from '@/components/admin/ContributionCard'
 import type { Database } from '@/types/database.types'
@@ -50,12 +50,26 @@ export default async function AdminPage() {
           <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">Administration</h1>
           <p className="mt-1 text-base text-gray-600">Gestion des contributions et des épreuves</p>
         </div>
-        <Link
-          href="/admin/epreuves/upload"
-          className="inline-flex items-center gap-2 rounded-lg bg-blue-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-900 transition-colors"
-        >
-          <Upload className="h-4 w-4" /> Ajouter une épreuve
-        </Link>
+        <div className="flex flex-wrap gap-2">
+          <Link
+            href="/admin/ecoles"
+            className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
+          >
+            <School className="h-4 w-4" /> Écoles
+          </Link>
+          <Link
+            href="/admin/filieres"
+            className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
+          >
+            <BookOpen className="h-4 w-4" /> Filières
+          </Link>
+          <Link
+            href="/admin/epreuves/upload"
+            className="inline-flex items-center gap-2 rounded-lg bg-blue-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-900 transition-colors"
+          >
+            <Upload className="h-4 w-4" /> Ajouter une épreuve
+          </Link>
+        </div>
       </div>
 
       {/* Stats */}

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { Toaster } from 'sonner'
+import { ServiceWorkerRegistration } from '@/components/layout/ServiceWorkerRegistration'
 import './globals.css'
 
 const geistSans = Geist({
@@ -22,7 +23,7 @@ export const metadata: Metadata = {
     template: '%s | Épreuves Concours Cameroun',
   },
   description:
-    'Consultez et téléchargez gratuitement les annales des concours africains : ISSEA, EAMAC, ENSP Yaoundé, ENS Yaoundé, IFORD, EAMAU, Probatoire série D. Épreuves corrigées et non corrigées.',
+    'Consultez et téléchargez gratuitement les annales des concours du Cameroun et de la sous-région : ISSEA, EAMAC, ENSP Yaoundé, ENS Yaoundé, IFORD, EAMAU, etc. Épreuves corrigées et non corrigées.',
   keywords: [
     'épreuves concours Cameroun', 'annales ISSEA', 'annales EAMAC', 'annales ENSP Yaoundé',
     'annales ENS Yaoundé', 'IFORD', 'EAMAU', 'Probatoire série D',
@@ -52,6 +53,11 @@ export const metadata: Metadata = {
   alternates: {
     canonical: APP_URL,
   },
+  manifest: '/manifest.webmanifest',
+}
+
+export const viewport = {
+  themeColor: '#1e40af',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -63,6 +69,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-full flex flex-col">
         {children}
         <Toaster richColors position="top-center" />
+        <ServiceWorkerRegistration />
       </body>
     </html>
   )

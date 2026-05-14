@@ -12,7 +12,8 @@ Refonte complète d'un site PHP vers une stack moderne : **Next.js 16 · TypeScr
 - Commentaires publics (avec réponses imbriquées)
 - Espace membre : inscription, connexion, profil, photo de profil
 - Contribution d'épreuves par les membres (soumis à modération)
-- Interface d'administration : validation/rejet des contributions, upload direct d'épreuves
+- Interface d'administration : validation/rejet des contributions, upload direct d'épreuves, gestion CRUD des écoles et filières
+- PWA installable (manifest + service worker) avec cache offline des PDFs
 
 ## Stack technique
 

@@ -1,4 +1,4 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
@@ -18,6 +18,6 @@ const nextConfig: NextConfig = {
       bodySizeLimit: '22mb',
     },
   },
-};
+}
 
-export default nextConfig;
+export default nextConfig
